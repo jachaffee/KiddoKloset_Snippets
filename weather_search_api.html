@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <title>Weather based on city</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+  <input id="input" placeholder="Austin, TX">
+  <button id="submit">Submit</button>
+  <h4>Humidity is:<p id="weather"></p></h4>
+</body>
+<script>
+    $("#submit").on("click", function(event) {
+      event.preventDefault();
+      var city = $("#input").val();
+        console.log(city);
+      var queryURL = "https://api.openweathermap.org/data/2.5/weather?q="+ city + "&appid=166a433c57516f51dfab1f7edaed8413";
+        $.ajax({
+          url: queryURL,
+          method: "GET"
+        }).done(function(response) {
+          console.log(response);
+          $("#weather").text(response.main.humidity)
+        });
+    });
+</script>
+</html>

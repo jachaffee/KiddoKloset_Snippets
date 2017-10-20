@@ -22,6 +22,27 @@
 
   var database = firebase.database();
 
+  $("#PLACEHOLDER-SUBMIT-BUTTON").on("click", function(event) {
+    event.preventDefault();
+
+    var name = $("#PLACEHOLDER-NAME-INPUT").val().trim();
+    var gender = $("#PLACEHOLDER-GENDER-INPUT").val().trim();
+    var location = $("#PLACEHOLDER-LOCATION-INPUT").val().trim();
+    var avatar = $("#PLACEHOLDER-AVATAR-INPUT").val().trim();
+
+
+    var newUser = {
+      name: name,
+      gender: gender,
+      location: location,
+      avatar: avatar
+    };
+
+    database.ref().push(newUser);
+  })
+
+
+
   
 </script>
 </html>
