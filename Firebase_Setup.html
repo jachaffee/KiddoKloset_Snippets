@@ -6,10 +6,18 @@
 </head>
 <body>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.5.2/firebase.js"></script>
 </body>
 
 <script>
+
+
+  var userName;
+  var userGender;
+  var userLocation;
+  var userID = 1;
+
   var config = {
     apiKey: "AIzaSyBv5tEwvh-mdlB3ClXlOyet7EP5tKLJELI",
     authDomain: "project1-a2b3e.firebaseapp.com",
@@ -22,26 +30,61 @@
 
   var database = firebase.database();
 
+
+  var connectionsRef = database.ref("/connections");
+
+  var connectedRef = database.ref(".info/connected");
+
+  connectedRef.on("value", function(snap) {
+  
+    if (snap.val()) {
+
+      var con = connectionsRef.push(true);
+
+      con.onDisconnect().remove();
+    }
+
+  });
+
+  database.ref("/userData").on("value", function(snapshot) {
+
+  if (snapshot.child("userID").exists() && connectionsRef === true) {
+
+    userName = snapshot.val().name;
+    userGender = snapshot.val().gender;
+    userLocation = snapshot.val().location;
+    userAvatar = snapshot.val().avatar;
+
+
+    $("#PLACEHOLDER-WELCOME-NAME-AREA").text(snapshot.val().name);
+    //set variables for gender, location, and avatar to match saved values
+
+  else {
+    //redirect to sign-in screen
+  }
+
+
+  
   $("#PLACEHOLDER-SUBMIT-BUTTON").on("click", function(event) {
     event.preventDefault();
 
-    var name = $("#PLACEHOLDER-NAME-INPUT").val().trim();
-    var gender = $("#PLACEHOLDER-GENDER-INPUT").val().trim();
-    var location = $("#PLACEHOLDER-LOCATION-INPUT").val().trim();
-    var avatar = $("#PLACEHOLDER-AVATAR-INPUT").val().trim();
+    var newName = $("#PLACEHOLDER-NAME-INPUT").val().trim();
+    var newGender = $("#PLACEHOLDER-GENDER-INPUT").val().trim();
+    var newLocation = $("#PLACEHOLDER-LOCATION-INPUT").val().trim();
+    var newAvatar = $("#PLACEHOLDER-AVATAR-INPUT").val().trim();
 
 
     var newUser = {
-      name: name,
-      gender: gender,
-      location: location,
-      avatar: avatar
+      name: newName,
+      gender: newGender,
+      location: newLocation,
+      avatar: newAvatar,
+      id: userID
     };
 
-    database.ref().push(newUser);
+    database.ref("/userData" + userID).push(newUser);
+    userID++;
   })
-
-
 
   
 </script>
