@@ -40,11 +40,16 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
 	<script>
-
+/*This just plain isn't working, so maybe some of you all will have an idea on how to fix it, or
+maybe have a better way to do this. My current issue is that the userCounter, which will be our 
+unique identifier works the first time, but once there is an entry in the databaste, the userCounter 
+becomes undefined. I'll keep working on the problem, and if I can't figure it out and nobody else has
+an idea, then I will talk to one of the TA's about it tomorrow.*/
   var userName;
   var userGender;
   var userLocation;
-  var userID = 1;
+  var InitialUser = 0;
+  var userCounter = InitialUser;
 
   var config = {
     apiKey: "AIzaSyD9NnsfPf4Mnu6lOdxV7GvsqOiChF9Ak1k",
@@ -59,32 +64,26 @@
   var database = firebase.database();
 
 
-  var connectionsRef = database.ref("/connections");
+  database.ref("/userNumber").on("value", function(snapshot) {
 
-  var connectedRef = database.ref(".info/connected");
-
-  connectedRef.on("value", function(snap) {
-  
-    if (snap.val()) {
-
-      var con = connectionsRef.push(true);
-
-      con.onDisconnect().remove();
-    }
+  	if (snapshot.child("users").exists()) {
+  		userCounter = snapshot.val().userCounter;
+  	}
 
   });
 
-  database.ref("/userData" + userID).on("value", function(snapshot) {
-  	console.log(snapshot.val());
-  if (snapshot.child("name").exists()) {
+ 
+  database.ref("/userData" + userCounter).on("value", function(snapshot) {
 
-    userName = snapshot.val().name;
-    userGender = snapshot.val().gender;
-    userLocation = snapshot.val().location;
+//   if (snapshot.child("name").exists()) {
 
-    $(".empty-div").append("<p>Welcome " + userName + "!</p><p>You are a " + userGender + "!</p><p>You live in " + userLocation + "!");
-    //set variables for gender, location, and avatar to match saved values
-	}
+//     userName = snapshot.val().name;
+//     userGender = snapshot.val().gender;
+//     userLocation = snapshot.val().location;
+
+//     $(".empty-div").append("<p>Welcome " + userName + "!</p><p>You are a " + userGender + "!</p><p>You live in " + userLocation + "!");
+//     //set variables for gender, location, and avatar to match saved values
+// 	}
 });
   //else {}
     //redirect to sign-in screen
@@ -92,21 +91,25 @@
 	   
   $("#add-user-btn").on("click", function(event) {
     event.preventDefault();
-
+    console.log(userCounter);
+    userCounter++;
+    console.log(userCounter);
     var newName = $("#name-input").val().trim();
     var newGender = $("#gender-input").val().trim();
     var newLocation = $("#location-input").val().trim();
-
+    
 
     var newUser = {
       name: newName,
       gender: newGender,
       location: newLocation,
-      id: userID
+      id: userCounter
     };
 
-    database.ref("/userData" + userID).set(newUser);
-    userID++;
+    database.ref("/userData" + userCounter).set(newUser);
+    database.ref("/userNumber").set({
+    	users: userCounter
+    });
   });
 		
 
