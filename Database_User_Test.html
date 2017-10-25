@@ -19,23 +19,25 @@
 				<form>
   					<div class="form-group">
     					<label for="name-input">Name:</label>
-    					<input type="text" class="form-control" id="user">
+    					<input type="text" class="form-control" id="name-input">
   					</div>
   					<div class="form-group">
     					<label for="gender-input">Gender:</label>
-    					<input type="text" class="form-control" id="gender">
+    					<input type="text" class="form-control" id="gender-input">
   					</div>
   					<div class="form-group">
     					<label for="location-input">Location:</label>
-    					<input type="text" class="form-control" id="location">
+    					<input type="text" class="form-control" id="location-input">
   					</div>
   					<button class="btn btn-primary" id="add-user-btn" type="submit">Submit</button>
 				</form>
-
+				<div class="empty-div">
+				</div>
   			</div>
 		</div>
 	</div>
 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
 	<script>
 
@@ -72,23 +74,22 @@
 
   });
 
-  database.ref("/userData").on("value", function(snapshot) {
-
-  if (snapshot.child("userID").exists() && connectionsRef === true) {
+  database.ref("/userData" + userID).on("value", function(snapshot) {
+  	console.log(snapshot.val());
+  if (snapshot.child("name").exists()) {
 
     userName = snapshot.val().name;
     userGender = snapshot.val().gender;
     userLocation = snapshot.val().location;
 
-    $(".panel-body").append("<p>Welcome " + userName + "!</p><p>You are a " + userGender + "!</p><p>You live in " + userLocation + "!");
+    $(".empty-div").append("<p>Welcome " + userName + "!</p><p>You are a " + userGender + "!</p><p>You live in " + userLocation + "!");
     //set variables for gender, location, and avatar to match saved values
-
+	}
+});
   //else {}
     //redirect to sign-in screen
   
-
-
-  
+	   
   $("#add-user-btn").on("click", function(event) {
     event.preventDefault();
 
@@ -104,9 +105,9 @@
       id: userID
     };
 
-    database.ref("/userData" + userID).push(newUser);
+    database.ref("/userData" + userID).set(newUser);
     userID++;
-  })
+  });
 		
 
 
