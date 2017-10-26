@@ -63,11 +63,14 @@ an idea, then I will talk to one of the TA's about it tomorrow.*/
 
   var database = firebase.database();
 
-
+	console.log("line 66 userCounter: " + userCounter)
   database.ref("/userNumber").on("value", function(snapshot) {
-
+  	// console.log("line 68 snapshot.val().userCounter: " + snapshot.val().userNumber.users);
   	if (snapshot.child("users").exists()) {
-  		userCounter = snapshot.val().userCounter;
+  		console.log("if statement line 70 firing");
+  		// console.log("line 70 userCounter: " + userCounter)
+  		// userCounter = snapshot.val().userNumber.users;
+  		// console.log("line 72 userCounter: " + userCounter)
   	}
 
   });
@@ -91,9 +94,9 @@ an idea, then I will talk to one of the TA's about it tomorrow.*/
 	   
   $("#add-user-btn").on("click", function(event) {
     event.preventDefault();
-    console.log(userCounter);
+    console.log("line 94 userCounter: " + userCounter);
     userCounter++;
-    console.log(userCounter);
+    console.log("line 96 userCounter: " + userCounter);
     var newName = $("#name-input").val().trim();
     var newGender = $("#gender-input").val().trim();
     var newLocation = $("#location-input").val().trim();
@@ -105,7 +108,8 @@ an idea, then I will talk to one of the TA's about it tomorrow.*/
       location: newLocation,
       id: userCounter
     };
-
+    console.log("line 108 userCounter value:" + userCounter);
+    console.log("line 108 newUser value:" + JSON.stringify(newUser));
     database.ref("/userData" + userCounter).set(newUser);
     database.ref("/userNumber").set({
     	users: userCounter
